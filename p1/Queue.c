@@ -27,13 +27,13 @@ void enqueue(Queue *q, int x) {
 }
 
 // To Dequeue an integer.
-void dequeue(Queue *q) {
+Node *dequeue(Queue *q) {
 	Node *temp = q->front;
 	if(q->front == NULL) {
 		printf("Queue is Empty!\n");
-		return;
+		return NULL;
 	}
-    q->size--;
+    q->size = 0;
 	if(q->front == q->back) {
 		q->front = q->back = NULL;
 	}
@@ -41,7 +41,7 @@ void dequeue(Queue *q) {
 		q->front = q->front->next;
 	}
 
-	free(temp);
+    return temp;
 }
 
 void printQueue(Queue *q) {

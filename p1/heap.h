@@ -1,4 +1,7 @@
 #include "Node.h"
+#include "Queue.h"
+#include "Stack.h"
+
 typedef struct HeapObject {
 
     // Min or Max heap?
@@ -8,3 +11,4 @@ typedef struct HeapObject {
 } Heap;
 
 extern Heap *newHeap();
+extern void insert(Heap *h, Queue *q, Stack *s, int x);

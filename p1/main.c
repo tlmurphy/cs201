@@ -20,7 +20,7 @@ int Desc = 0;       /* option -v      */
 
 int ProcessOptions(int,char **);
 void Fatal(char *,...);
-void buildHeap(Queue *q, Stack *s);
+void buildHeap(Heap *h, Queue *q, Stack *s);
 
 int main(int argc,char **argv) {
     int argIndex;
@@ -30,52 +30,19 @@ int main(int argc,char **argv) {
     printf("Sorting in %s order\n", Order == 0? "increasing" : "decreasing");
     printf("Dash v is %s\n", Desc == 0? "not enabled" : "enabled");
 
-    Node *n, *p, *q;
-
-    n = newTreeNode(5, NULL);
-    p = newTreeNode(78, n);
-    q = newTreeNode(12, n);
-    n->LC = p;
-    n->RC = q;
-
-    printf("ROOT: %d\n", n->value);
-    printf("LEFT CHILD: %d\n", n->LC->value);
-    printf("RIGHT CHILD: %d\n", n->RC->value);
-    if (p->LC != NULL && p->RC != NULL) {
-        printf("LEFT CHILD OF NODE 78: %d\n", p->LC->value);
-        printf("RIGHT CHILD OF NODE 78: %d\n", p->RC->value);
-    } else {
-        printf("The values of these nodes are NULL!\n");
-    }
-
-    Queue *hey;
-    hey = newQueue();
-    enqueue(hey, 55); enqueue(hey, 90); enqueue(hey, 100);
-    printQueue(hey);
-    printf("DEQUEUE 1 VALUE...\n");
-    dequeue(hey);
-    printQueue(hey);
-
-    Stack *yolo;
-    yolo = newStack();
-    push(yolo, 18); push(yolo, 78); push(yolo, 54); push(yolo, 22); push(yolo, 2);
-
-    printStack(yolo);
-
-    printf("POP\n");
-    pop(yolo);
-    printStack(yolo);
-    printf("POP\n");
-    pop(yolo);
-    printStack(yolo);
-
-    Queue *b;
-    Stack *m;
-    b = newQueue();
-    m = newStack();
-    buildHeap(b, m);
-    printQueue(b);
-    printStack(m);
+    Queue *q;
+    Stack *s;
+    Heap *h;
+    q = newQueue();
+    s = newStack();
+    h = newHeap();
+    buildHeap(h, q, s);
+    printStack(s);
+    printf("%d\n", pop(s)->value);
+    printf("%d\n", dequeue(q)->value);
+    free(q);
+    free(s);
+    free(h);
 
     return 0;
 }
@@ -154,15 +121,13 @@ int ProcessOptions(int argc, char **argv) {
     return argIndex;
 }
 
-void buildHeap(Queue *q, Stack *s) {
+void buildHeap(Heap *h, Queue *q, Stack *s) {
     FILE *fp;
-    fp = fopen("integers", "r");
-    int count = 0;
+    fp = fopen("integers1", "r");
     int temp;
     while (fscanf(fp, "%d", &temp) > 0) {
-        enqueue(q, temp);
-        push(s, temp);
-        count++;
+        insert(h, q, s, temp);
+        printQueue(q);
     }
 
     fclose(fp);

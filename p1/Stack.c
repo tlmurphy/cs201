@@ -27,15 +27,15 @@ void push(Stack *s, int x) {
 }
 
 // To pop a value from the stack
-void pop(Stack *s) {
+Node *pop(Stack *s) {
     Node *temp = s->top;
     if (s->top == NULL) {
         printf("Stack is Empty!\n");
-        return;
+        return NULL;
     }
     s->size--;
     s->top = s->top->next;
-    free(temp);
+    return temp;
 }
 
 void printStack(Stack *s) {

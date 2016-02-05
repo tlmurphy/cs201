@@ -21,47 +21,31 @@ void enqueue(Queue *q, int x) {
 	}
 	q->back->next = temp;
 	q->back = temp;
+	q->size++;
 }
 
-// // To Dequeue an integer.
-// void Dequeue() {
-// 	Node* temp = front;
-// 	if(front == NULL) {
-// 		printf("Queue is Empty\n");
-// 		return;
-// 	}
-// 	if(front == rear) {
-// 		front = rear = NULL;
-// 	}
-// 	else {
-// 		front = front->next;
-// 	}
-// 	free(temp);
-// }
-//
-// int Front() {
-// 	if(front == NULL) {
-// 		printf("Queue is empty\n");
-// 		return;
-// 	}
-// 	return front->data;
-// }
-//
-// void Print() {
-// 	Node* temp = front;
-// 	while(temp != NULL) {
-// 		printf("%d ",temp->data);
-// 		temp = temp->next;
-// 	}
-// 	printf("\n");
-// }
-//
-// int main(){
-// 	/* Drive code to test the implementation. */
-// 	// Printing elements in Queue after each Enqueue or Dequeue
-// 	Enqueue(2); Print();
-// 	Enqueue(4); Print();
-// 	Enqueue(6); Print();
-// 	Dequeue();  Print();
-// 	Enqueue(8); Print();
-// }
+// To Dequeue an integer.
+void dequeue(Queue *q) {
+	Node *temp = q->front;
+	if(q->front == NULL) {
+		printf("Queue is Empty!\n");
+		return;
+	}
+	if(q->front == q->back) {
+		q->front = q->back = NULL;
+	}
+	else {
+		q->front = q->front->next;
+	}
+	q->size--;
+	free(temp);
+}
+
+void printQueue(Queue *q) {
+	Node *temp = q->front;
+	while(temp != NULL) {
+		printf("%d ", temp->value);
+		temp = temp->next;
+	}
+	printf("\n");
+}

@@ -1,10 +1,14 @@
 #include "Node.h"
 
 typedef struct QueueObject {
-    struct NodeObject *front;
-    struct NodeObject *back;
+
+    Node *front;
+    Node *back;
     int size;
+
 } Queue;
 
 extern Queue *newQueue();
 extern void enqueue(Queue *q, int x);
+extern void dequeue(Queue *q);
+extern void printQueue(Queue *q);

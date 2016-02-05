@@ -1,5 +1,6 @@
 #include <stdio.h>
-#include "Node.h"
+#include <stdlib.h>
+#include "Queue.h"
 
 int main() {
     Node *n, *p, *q;
@@ -20,6 +21,15 @@ int main() {
         printf("The values of these nodes are NULL!\n");
     }
 
+    Queue *hey;
+    hey = newQueue();
+    enqueue(hey, 55);
+    enqueue(hey, 90);
+    enqueue(hey, 100);
+    printQueue(hey);
+    printf("DEQUEUE 1 VALUE...\n");
+    dequeue(hey);
+    printQueue(hey);
 
     return 0;
 }

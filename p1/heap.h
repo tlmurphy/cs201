@@ -1,9 +1,10 @@
-#include "node.h"
+#include "Node.h"
+typedef struct HeapObject {
 
-typedef struct heapobject {
+    // Min or Max heap?
+    Node *root;
+    int size;
 
-    node *root;
+} Heap;
 
-} heap;
-
-extern node *newNode(int value, node *parent);
+extern Heap *newHeap();

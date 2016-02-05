@@ -10,14 +10,17 @@
 #include <stdarg.h>
 #include <string.h>
 
+#include "Queue.h"
+#include "Stack.h"
+#include "Heap.h"
+
 /* options */
 int Order = 0;      /* option -d      */
-int Special = 0;    /* option -s      */
-int Number = 0;     /* option -n XXXX */
-char* Name = 0;     /* option -N YYYY */
+int Desc = 0;       /* option -v      */
 
 int ProcessOptions(int,char **);
 void Fatal(char *,...);
+void buildHeap(Queue *q, Stack *s);
 
 int main(int argc,char **argv) {
     int argIndex;
@@ -25,9 +28,54 @@ int main(int argc,char **argv) {
     argIndex = ProcessOptions(argc,argv);
 
     printf("Sorting in %s order\n", Order == 0? "increasing" : "decreasing");
-    printf("Special is %s\n", Special == 0? "false" : "true");
-    printf("Number is %d\n", Number);
-    printf("Name is %s\n", Name == 0? "missing" : Name);
+    printf("Dash v is %s\n", Desc == 0? "not enabled" : "enabled");
+
+    Node *n, *p, *q;
+
+    n = newTreeNode(5, NULL);
+    p = newTreeNode(78, n);
+    q = newTreeNode(12, n);
+    n->LC = p;
+    n->RC = q;
+
+    printf("ROOT: %d\n", n->value);
+    printf("LEFT CHILD: %d\n", n->LC->value);
+    printf("RIGHT CHILD: %d\n", n->RC->value);
+    if (p->LC != NULL && p->RC != NULL) {
+        printf("LEFT CHILD OF NODE 78: %d\n", p->LC->value);
+        printf("RIGHT CHILD OF NODE 78: %d\n", p->RC->value);
+    } else {
+        printf("The values of these nodes are NULL!\n");
+    }
+
+    Queue *hey;
+    hey = newQueue();
+    enqueue(hey, 55); enqueue(hey, 90); enqueue(hey, 100);
+    printQueue(hey);
+    printf("DEQUEUE 1 VALUE...\n");
+    dequeue(hey);
+    printQueue(hey);
+
+    Stack *yolo;
+    yolo = newStack();
+    push(yolo, 18); push(yolo, 78); push(yolo, 54); push(yolo, 22); push(yolo, 2);
+
+    printStack(yolo);
+
+    printf("POP\n");
+    pop(yolo);
+    printStack(yolo);
+    printf("POP\n");
+    pop(yolo);
+    printStack(yolo);
+
+    Queue *b;
+    Stack *m;
+    b = newQueue();
+    m = newStack();
+    buildHeap(b, m);
+    printQueue(b);
+    printStack(m);
 
     return 0;
 }
@@ -91,15 +139,7 @@ int ProcessOptions(int argc, char **argv) {
                 Order = 1;
                 break;
             case 'v':
-                Number = atoi(arg);
-                argUsed = 1;
-                break;
-            case 's':
-                Special = 1;
-                break;
-            case 'N':
-                Name = strdup(arg);
-                argUsed = 1;
+                Desc = 1;
                 break;
             default:
                 Fatal("option %s not understood\n",argv[argIndex]);
@@ -114,51 +154,16 @@ int ProcessOptions(int argc, char **argv) {
     return argIndex;
 }
 
-// #include <stdio.h>
-// #include <stdlib.h>
-//
-// void readNums(int **, int *, int);
-//
-// int main(int argc, char const *argv[]) {
-//     int *nums, numsSize;
-//     int capacity = 100;
-//
-//     nums = malloc(sizeof(int) * capacity);
-//     readNums(&nums, &numsSize, capacity);
-//
-//     //Testing editing code through atom
-//
-//     for (int i = 0; i < numsSize; i++) {
-//         printf("%d\n", nums[i]);
-//     }
-//
-//     return 0;
-// }
-//
-// void readNums(int **nums, int *numsSize, int capacity) {
-//     FILE *fp;
-//     fp = fopen("integers1", "r");
-//
-//     int sampleSize = 0;
-//     while (!feof(fp)) {
-//         int temp;
-//         nums[sampleSize] = malloc(sizeof(nums));
-//         fscanf(fp, "%d", &temp);
-//         //printf("%D\n", temp);
-//         *nums[sampleSize] = temp;
-//         ++sampleSize;
-//         printf("capacity: %d\n", capacity);
-//         printf("sampleSize: %d\n", sampleSize);
-//         if (sampleSize >= capacity) {
-//             capacity *= 2;
-//             // Remember to use sizeof(int) you idiot...
-//             *nums = realloc(*nums, sizeof(int) * capacity);
-//             if(*nums == NULL) {
-//                 printf("That's not good...\n");
-//             }
-//         }
-//     }
-//
-//     *numsSize = sampleSize - 1;
-//     fclose(fp);
-// }
+void buildHeap(Queue *q, Stack *s) {
+    FILE *fp;
+    fp = fopen("integers", "r");
+    int count = 0;
+    int temp;
+    while (fscanf(fp, "%d", &temp) > 0) {
+        enqueue(q, temp);
+        push(s, temp);
+        count++;
+    }
+
+    fclose(fp);
+}

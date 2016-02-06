@@ -11,8 +11,9 @@ typedef struct StackObject {
 } Stack;
 
 extern Stack *newStack();
-extern void push(Stack *s, int x);
-extern Node *pop(Stack *s);
+extern void push(Stack *s, TreeNode *tn);
+extern void pop(Stack *s);
 extern void printStack(Stack *s);
+extern void checkStack(Stack *s);
 
 #endif /* STACK_H */

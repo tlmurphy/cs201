@@ -15,10 +15,10 @@ Queue *newQueue() {
 }
 
 // To Enqueue an integer
-void enqueue(Queue *q, int x) {
+void enqueue(Queue *q, TreeNode *tn) {
     q->size++;
-	Node *temp = newNode(x);
-	if(q->front == NULL && q->back == NULL){
+	Node *temp = newNode(tn);
+	if (q->front == NULL && q->back == NULL){
 		q->front = q->back = temp;
 		return;
 	}
@@ -27,27 +27,25 @@ void enqueue(Queue *q, int x) {
 }
 
 // To Dequeue an integer.
-Node *dequeue(Queue *q) {
+void dequeue(Queue *q) {
 	Node *temp = q->front;
-	if(q->front == NULL) {
+	if (q->front == NULL) {
 		printf("Queue is Empty!\n");
-		return NULL;
+		return;
 	}
     q->size = 0;
-	if(q->front == q->back) {
+	if (q->front == q->back) {
 		q->front = q->back = NULL;
-	}
-	else {
+	} else {
 		q->front = q->front->next;
 	}
-
-    return temp;
+    free(temp);
 }
 
 void printQueue(Queue *q) {
 	Node *temp = q->front;
 	while(temp != NULL) {
-		printf("%d ", temp->value);
+		printf("%d ", temp->treeNode->value);
 		temp = temp->next;
 	}
 	printf("\n");

@@ -23,9 +23,9 @@ void Fatal(char *,...);
 void buildHeap(Heap *h, Queue *q, Stack *s);
 
 int main(int argc,char **argv) {
-    int argIndex;
+    //int argIndex;
 
-    argIndex = ProcessOptions(argc,argv);
+    ProcessOptions(argc,argv);
 
     printf("Sorting in %s order\n", Order == 0? "increasing" : "decreasing");
     printf("Dash v is %s\n", Desc == 0? "not enabled" : "enabled");
@@ -37,9 +37,12 @@ int main(int argc,char **argv) {
     s = newStack();
     h = newHeap();
     buildHeap(h, q, s);
+    printf("THE STACK: \n");
     printStack(s);
-    printf("%d\n", pop(s)->value);
-    printf("%d\n", dequeue(q)->value);
+    printf("THE QUEUE: \n");
+    printQueue(q);
+    checkStack(s);
+
     free(q);
     free(s);
     free(h);
@@ -123,7 +126,7 @@ int ProcessOptions(int argc, char **argv) {
 
 void buildHeap(Heap *h, Queue *q, Stack *s) {
     FILE *fp;
-    fp = fopen("integers1", "r");
+    fp = fopen("integers", "r");
     int temp;
     while (fscanf(fp, "%d", &temp) > 0) {
         insert(h, q, s, temp);

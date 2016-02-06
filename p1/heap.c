@@ -12,30 +12,35 @@ Heap *newHeap() {
 }
 
 void insert(Heap *h, Queue *q, Stack *s, int x) {
-    enqueue(q, x);
     if (h->root == NULL) {
         h->root = newTreeNode(x, NULL);
-        q->size--; // Don't want increment this when root
+        enqueue(q, h->root);
+        push(s, h->root);
     } else {
-        if (q->size == 2) {
-            Node *temp = dequeue(q);
-            push(s, temp->value);
-            free(temp);
+        TreeNode *parent = q->front->treeNode;
+        TreeNode *leftChild = q->front->treeNode->LC;
+        TreeNode *tn = newTreeNode(x, parent);
+        enqueue(q, tn);
+        if (leftChild == NULL) {
+            parent->LC = tn;
+            TreeNode *iter = tn;
+            while (iter->parent != NULL && iter->value < iter->parent->value) {
+                int temp = iter->value;
+                iter->value = iter->parent->value;
+                iter->parent->value = temp;
+                iter = iter->parent;
+            }
+        } else {
+            parent->RC = tn;
+            TreeNode *iter = tn;
+            while (iter->parent != NULL && iter->value < iter->parent->value) {
+                int temp = iter->value;
+                iter->value = iter->parent->value;
+                iter->parent->value = temp;
+                iter = iter->parent;
+            }
+            dequeue(q);
         }
+        push(s, tn);
     }
-
-
-    // min heap comparison
-    // if (q->back->value < q->front->value) {
-    //     int temp = q->back->value;
-    //     q->back->value = q->front->value;
-    //     q->front->value = temp;
-    // }
-
-
-    // if (h->size == 0) {
-    //     h->root = newTreeNode(x, NULL);
-    // } else {
-    //     //Node *tNode = newTreeNode(x, q->front);
-    // }
 }

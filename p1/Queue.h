@@ -12,8 +12,8 @@ typedef struct QueueObject {
 } Queue;
 
 extern Queue *newQueue();
-extern void enqueue(Queue *q, int x);
-extern Node *dequeue(Queue *q);
+extern void enqueue(Queue *q,  TreeNode *tn);
+extern void dequeue(Queue *q);
 extern void printQueue(Queue *q);
 
 #endif /* QUEUE_H */

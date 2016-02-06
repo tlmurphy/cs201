@@ -1,19 +1,15 @@
 #ifndef NODE_H
 #define NODE_H
 
+#include "TreeNode.h"
+
 typedef struct NodeObject {
 
-    int value;
-
-    struct NodeObject *parent;
-    struct NodeObject *LC;
-    struct NodeObject *RC;
-
+    TreeNode *treeNode;
     struct NodeObject *next;
 
 } Node;
 
-extern Node *newTreeNode(int value, Node *parent);
-extern Node *newNode(int value);
+extern Node *newNode(TreeNode *tn);
 
 #endif /* NODE_H */

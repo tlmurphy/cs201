@@ -1,11 +1,11 @@
-#include "Node.h"
+#include "TreeNode.h"
 #include "Queue.h"
 #include "Stack.h"
 
 typedef struct HeapObject {
 
     // Min or Max heap?
-    Node *root;
+    TreeNode *root;
     int size;
 
 } Heap;

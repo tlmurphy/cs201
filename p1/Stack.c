@@ -33,6 +33,20 @@ void pop(Stack *s) {
         printf("Stack is Empty!\n");
         return;
     }
+
+    TreeNode *parent = temp->treeNode->parent;
+    if (parent != NULL) {
+        if (parent->LC != NULL) {
+            if (parent->LC->value == temp->treeNode->value) {
+                parent->LC = NULL;
+            }
+        }
+        if (parent->RC != NULL) {
+            if (parent->RC->value == temp->treeNode->value) {
+                parent->RC = NULL;
+            }
+        }
+    }
     s->size--;
     s->top = s->top->next;
     free(temp);

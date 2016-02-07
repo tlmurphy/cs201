@@ -34,11 +34,11 @@ void dequeue(Queue *q) {
 		return;
 	}
     q->size = 0;
-	if (q->front == q->back) {
-		q->front = q->back = NULL;
-	} else {
+	if (q->front == q->back)
+        q->front = q->back = NULL;
+    else
 		q->front = q->front->next;
-	}
+
     free(temp);
 }
 

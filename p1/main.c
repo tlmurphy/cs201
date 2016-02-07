@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
+#include <time.h>
 
 #include "Queue.h"
 #include "Stack.h"
@@ -21,9 +22,15 @@ int Desc = 0;       /* option -v      */
 int ProcessOptions(int,char **);
 void Fatal(char *,...);
 void buildHeap(Heap *h, Queue *q, Stack *s);
+void sort(Heap *h, Stack *s);
+void printLevelOrder(TreeNode* root);
+void printGivenLevel(TreeNode* root, int level);
+int height(TreeNode* node);
 
 int main(int argc,char **argv) {
     //int argIndex;
+    clock_t t;
+    t = clock();
 
     ProcessOptions(argc,argv);
 
@@ -35,18 +42,32 @@ int main(int argc,char **argv) {
     Heap *h;
     q = newQueue();
     s = newStack();
-    h = newHeap();
-    buildHeap(h, q, s);
-    printf("THE STACK: \n");
-    printStack(s);
-    printf("THE QUEUE: \n");
-    printQueue(q);
-    checkStack(s);
+    h = newHeap(Order);
 
+    if (Order == 0) h->cmp = lt;
+    else h->cmp = gt;
+
+    buildHeap(h, q, s);
+    //printf("THE STACK: \n");
+    //printStack(s);
+    //printf("THE QUEUE: \n");
+    //printQueue(q);
+    //checkStack(s);
+    //printf("HEAP ROOT: %d\n", h->root->value);
+    // printf("HEAP LC: %d\n", h->root->LC->value);
+    // printf("HEAP RC: %d\n", h->root->RC->value);
+    // printf("HEAP LC LC %d\n", h->root->LC->LC->value);
+    // printf("STACK HEAD: %d\n", s->top->treeNode->value);
+
+    printf("BEGINNING SORT!\n");
+    sort(h, s);
     free(q);
     free(s);
     free(h);
 
+    t = clock() - t;
+    double time_taken = ((double) t)/CLOCKS_PER_SEC;
+    printf("%f seconds to execute...\n", time_taken);
     return 0;
 }
 
@@ -126,12 +147,76 @@ int ProcessOptions(int argc, char **argv) {
 
 void buildHeap(Heap *h, Queue *q, Stack *s) {
     FILE *fp;
-    fp = fopen("integers", "r");
+    fp = fopen("integers2", "r");
     int temp;
     while (fscanf(fp, "%d", &temp) > 0) {
         insert(h, q, s, temp);
-        printQueue(q);
     }
 
     fclose(fp);
+}
+
+void sort(Heap *h, Stack *s) {
+    //printLevelOrder(s->tailRoot->treeNode);
+    //s->tailRoot->treeNode->value = s->top->treeNode->value;
+    printf("%d\n", h->root->value);
+    h->root->value = s->top->treeNode->value;
+    pop(s);
+    //checkStack(s);
+    //printf("\n");
+    while (s->top != NULL) {
+        siftDown(h);
+        //printLevelOrder(s->tailRoot->treeNode);
+        //checkStack(s);
+        if (h->root == NULL) {
+            printf("ERROR!\n");
+        }
+        printf("%d\n", h->root->value);
+        h->root->value = s->top->treeNode->value;
+        pop(s);
+        //printf("\n");
+    }
+}
+
+/* Function to print level order traversal a tree*/
+void printLevelOrder(TreeNode* root)
+{
+    int h = height(root);
+    int i;
+    for (i=1; i<=h; i++)
+        printGivenLevel(root, i);
+}
+
+/* Print nodes at a given level */
+void printGivenLevel(TreeNode* root, int level)
+{
+    if (root == NULL)
+        return;
+    if (level == 1)
+        printf("%d ", root->value);
+    else if (level > 1)
+    {
+        printGivenLevel(root->LC, level-1);
+        printGivenLevel(root->RC, level-1);
+    }
+}
+
+/* Compute the "height" of a tree -- the number of
+    nodes along the longest path from the root node
+    down to the farthest leaf node.*/
+int height(TreeNode* node)
+{
+    if (node==NULL)
+        return 0;
+    else
+    {
+        /* compute the height of each subtree */
+        int lheight = height(node->LC);
+        int rheight = height(node->RC);
+
+        /* use the larger one */
+        if (lheight > rheight)
+            return(lheight+1);
+        else return(rheight+1);
+    }
 }

@@ -137,8 +137,8 @@ void printDescription() {
 
 void printTable() {
     printf("\n");
-    printf("TIME CALCULATED WHEN OUTPUT IS PRINTED TO CONSOLE\n");
-    printf("TABLE\n");
+    printf("TIME CALCULATED WHEN OUTPUT IS PRINTED TO CONSOLE...\n");
+    printf("\nINPUT SIZE VS TIME\n");
     printf("------------------\n");
     printf("n            time   \n");
     printf("%-13.1d%lf s\n", 1,        0.000070);
@@ -155,7 +155,7 @@ void printTable() {
 void buildTree(Heap *h, Queue *q, Stack *s, char *f) {
     FILE *fp;
     fp = fopen(f, "r");
-    int temp;
+    int temp = 0; // Just in case
     while (fscanf(fp, "%d", &temp) > 0)
         insert(h, q, s, temp);
     fclose(fp);

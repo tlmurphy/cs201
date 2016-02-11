@@ -26,6 +26,4 @@ Stack.o: Stack.c Stack.h Node.h
 clean:
 	rm -f *.o
 run: heapsort
-	./heapsort -v > final.txt
-
-# Also include a run
+	./heapsort intMil

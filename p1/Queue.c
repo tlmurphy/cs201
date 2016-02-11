@@ -1,4 +1,7 @@
-/*Queue - Linked List implementation*/
+/*
+Linked-list implemenation of Queue
+ */
+
 #include<stdio.h>
 #include<stdlib.h>
 #include "Queue.h"
@@ -7,18 +10,15 @@
 Queue *newQueue() {
 	Queue *q = malloc(sizeof(Queue));
     if (q == 0) { fprintf(stderr,"NOT ENOUGH MEMORY...EXITING\n"); exit(-1); }
-
+    
 	q->front = NULL;
 	q->back = NULL;
-    q->size = 0;
 	return q;
 }
 
-// To Enqueue an integer
 void enqueue(Queue *q, TreeNode *tn) {
-    q->size++;
 	Node *temp = newNode(tn);
-	if (q->front == NULL && q->back == NULL){
+	if (q->front == NULL && q->back == NULL) { // Queue is Empty
 		q->front = q->back = temp;
 		return;
 	}
@@ -26,15 +26,13 @@ void enqueue(Queue *q, TreeNode *tn) {
 	q->back = temp;
 }
 
-// To Dequeue an integer.
 void dequeue(Queue *q) {
 	Node *temp = q->front;
 	if (q->front == NULL) {
 		printf("Queue is Empty!\n");
 		return;
 	}
-    q->size = 0;
-	if (q->front == q->back)
+	if (q->front == q->back) // Only one item left
         q->front = q->back = NULL;
     else
 		q->front = q->front->next;
@@ -43,10 +41,10 @@ void dequeue(Queue *q) {
 }
 
 void printQueue(Queue *q) {
-	Node *temp = q->front;
-	while(temp != NULL) {
-		printf("%d ", temp->treeNode->value);
-		temp = temp->next;
+	Node *iter = q->front;
+	while (iter != NULL) {
+		printf("%d ", iter->treeNode->value);
+		iter = iter->next;
 	}
 	printf("\n");
 }

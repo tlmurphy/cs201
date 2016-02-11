@@ -19,26 +19,40 @@ void swap(int *x, int *y) {
 Heap *newHeap(int Order) {
 	Heap *h = malloc(sizeof(Heap));
     if (h == 0) { fprintf(stderr,"NOT ENOUGH MEMORY...EXITING\n"); exit(-1); }
+
     if (Order == 0) {
         h->cmp = &lt;
     } else {
         h->cmp = &gt;
     }
 	h->root = NULL;
-    h->size = 0;
 	return h;
 }
 
-void siftUp(Heap *h, TreeNode *tn) {
-    TreeNode *iter = tn;
-    while (iter->parent != NULL && h->cmp(iter->value, iter->parent->value)) {
-        swap(&iter->value, &iter->parent->value);
-        iter = iter->parent;
-    }
-}
+void siftDown(Heap *h, TreeNode *n) {
+    TreeNode *iter = n;
+    //((x) > 32 ? (x) : (2 * (x)))
 
-void siftDown(Heap *h) {
-    TreeNode *iter = h->root;
+    // if (n->RC == NULL) {
+    //     if (n->LC == NULL) return;
+    //     if (h->cmp(n->LC->value, n->value)) {
+    //         swap(&n->LC->value, &n->value);
+    //         siftDown(h, n->LC);
+    //     } else return;
+    // } else {
+    //     if (h->cmp(n->LC->value, n->RC->value)) {
+    //         if (h->cmp(n->LC->value, n->value)) {
+    //             swap(&n->LC->value, &n->value);
+    //             siftDown(h, n->LC);
+    //         } else return;
+    //     } else {
+    //         if (h->cmp(n->RC->value, n->value)) {
+    //             swap(&n->RC->value, &n->value);
+    //             siftDown(h, n->RC);
+    //         } else return;
+    //     }
+    // }
+
 
     while (1) {
         if (iter->RC == NULL) {
@@ -75,10 +89,8 @@ void insert(Heap *h, Queue *q, Stack *s, int x) {
         enqueue(q, tn);
         if (leftChild == NULL) {
             parent->LC = tn;
-            siftUp(h, tn);
         } else {
             parent->RC = tn;
-            siftUp(h, tn);
             dequeue(q);
         }
         push(s, tn);

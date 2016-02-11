@@ -7,7 +7,6 @@ typedef struct QueueObject {
 
     Node *front;
     Node *back;
-    int size;
 
 } Queue;
 

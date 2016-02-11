@@ -6,7 +6,6 @@
 typedef struct StackObject {
 
     Node *top;
-    int size;
 
 } Stack;
 

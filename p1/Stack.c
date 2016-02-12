@@ -1,6 +1,4 @@
-/*
-Linked-list implementation of Stack
- */
+// Linked-list implementation of Stack
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -9,7 +7,6 @@ Linked-list implementation of Stack
 Stack *newStack() {
     Stack *s = malloc(sizeof(Stack));
     if (s == 0) { fprintf(stderr, "NOT ENOUGH MEMORY...EXITING\n"); exit(-1); }
-
     s->top = NULL;
     return s;
 }
@@ -60,9 +57,9 @@ void printStack(Stack *s) {
 
 // Very handy in debugging
 void checkStack(Stack *s) {
-    Node *temp = s->top;
-    while (temp != NULL) {
-        TreeNode *tn = temp->treeNode;
+    Node *iter = s->top;
+    while (iter != NULL) {
+        TreeNode *tn = iter->treeNode;
         printf("VALUE: %d, ", tn->value);
         if (tn->parent == NULL)
             printf("NO PARENT, ");
@@ -76,7 +73,7 @@ void checkStack(Stack *s) {
             printf("NO RC");
         else
             printf("RC: %d", tn->RC->value);
-        temp = temp->next;
+        iter = iter->next;
         printf("\n");
     }
 }

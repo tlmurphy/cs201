@@ -5,7 +5,7 @@
 typedef struct HeapObject {
 
     TreeNode *root;
-    int (*cmp)(int, int);
+    int (*cmp)(int, int); // Function pointer for either min or max heap
 
 } Heap;
 

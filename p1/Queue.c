@@ -1,16 +1,13 @@
-/*
-Linked-list implemenation of Queue
- */
+// Linked-list implemenation of Queue
 
-#include<stdio.h>
-#include<stdlib.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include "Queue.h"
 #include "Node.h"
 
 Queue *newQueue() {
 	Queue *q = malloc(sizeof(Queue));
-    if (q == 0) { fprintf(stderr,"NOT ENOUGH MEMORY...EXITING\n"); exit(-1); }
-    
+    if (q == 0) { fprintf(stderr, "NOT ENOUGH MEMORY...EXITING\n"); exit(-1); }
 	q->front = NULL;
 	q->back = NULL;
 	return q;
@@ -36,7 +33,6 @@ void dequeue(Queue *q) {
         q->front = q->back = NULL;
     else
 		q->front = q->front->next;
-
     free(temp);
 }
 

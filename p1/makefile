@@ -1,12 +1,3 @@
-# Here are some notes on makefiles.
-#
-# This is how I would normally compile...
-#
-#     gcc -Wall -g heapsort.c heap.c d1.c...
-#
-# need to make a rule for each object file
-# don't forget clean to get rid of the object files
-
 OBJS = heapsort.o Node.o Heap.o Queue.o Stack.o TreeNode.o
 heapsort: $(OBJS)
 	gcc -Wall -g $(OBJS) -o heapsort
@@ -26,4 +17,4 @@ Stack.o: Stack.c Stack.h Node.h
 clean:
 	rm -f *.o
 run: heapsort
-	./heapsort intMil
+	./heapsort -v

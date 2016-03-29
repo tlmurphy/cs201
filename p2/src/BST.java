@@ -47,50 +47,52 @@ public class BST {
     }
 
     public void delete(String text) {
-        MyTreeNode temp = this.root;
-        while (temp != null) {
-            if (text.compareTo(temp.getValue()) == 0)
-                break;
-            else if (text.compareTo(temp.getValue()) >= 1) {
-                temp = temp.getRC();
-            }
-            else {
-                temp = temp.getLC();
-            }
+        MyTreeNode temp = findNode(text);
+        if (temp == null) {
+            System.out.println("NODE NOT FOUND!");
+            return;
         }
-
         if (temp.getFrequency() > 1) {
             temp.decrement();
             return;
         }
+        temp = swapToLeaf(temp);
+        prune(temp);
+        size--;
+    }
 
-
-        MyTreeNode p = temp.getParent();
-        if (temp.getLC() == null && temp.getRC() == null) {
+    public MyTreeNode swapToLeaf(MyTreeNode n) {
+        MyTreeNode p = n.getParent();
+        if (n.getLC() == null && n.getRC() == null) {
             // Leaf node
-            if (temp.getId() == 1)
-                p.setLC(null);
-            else
-                p.setRC(null);
-            return;
+            return n;
         }
 
-
-        if (temp.getLC() != null) {
+        if (n.getLC() != null) {
+            MyTreeNode predecessor = null;
             // Left subtree is available
-            MyTreeNode predecessor = findPredecessor(temp);
-            temp.setValue(predecessor.getValue());
-            temp.setFrequency(predecessor.getFrequency());
+            predecessor = findPredecessor(n);
+            n.setValue(predecessor.getValue());
+            n.setFrequency(predecessor.getFrequency());
+            return predecessor;
         } else {
             // No left subtree, use right child
-            if (temp.isRoot())
-                this.root = temp.getRC();
-            else if (temp.isLC())
-                p.setLC(temp.getRC());
+            if (n.isRoot())
+                this.root = n.getRC();
+            else if (n.isLC())
+                p.setLC(n.getRC());
             else
-                p.setRC(temp.getLC());
+                p.setRC(n.getLC());
+            return n.getRC();
         }
-        size--;
+    }
+
+    public void prune(MyTreeNode node) {
+        if (node.isLC()) {
+            node.getParent().setLC(null);
+        } else {
+            node.getParent().setRC(null);
+        }
     }
 
     private MyTreeNode findPredecessor(MyTreeNode node) {
@@ -99,8 +101,9 @@ public class BST {
         while (temp.getRC() != null)
             temp = temp.getRC();
         MyTreeNode p = temp.getParent();
-        if (temp.isLC())
-            p.setLC(null);
+        if (temp.isLC()) {
+            p.setLC(temp.getLC());
+        }
         else
             p.setRC(null);
         return temp;
@@ -123,7 +126,30 @@ public class BST {
         this.root.setId(0);
     }
 
-    public static void levelOrderTraversal(MyTreeNode startNode) {
+    public MyTreeNode findNode(String text) {
+        MyTreeNode temp = root;
+        while (temp != null) {
+            if (text.compareTo(temp.getValue()) == 0)
+                break;
+            else if (text.compareTo(temp.getValue()) >= 1) {
+                temp = temp.getRC();
+            }
+            else {
+                temp = temp.getLC();
+            }
+        }
+        return temp;
+    }
+
+    public void reportFrequency(String text) {
+        System.out.println(findNode(text).getFrequency());
+    }
+
+    public void levelOrderTraversal(MyTreeNode startNode) {
+        if (isEmpty()) {
+            System.out.println("THIS TREE IS EMPTY!");
+            return;
+        }
         Queue<MyTreeNode> queue=new LinkedList<MyTreeNode>();
         queue.add(startNode);
         int nodesInCurrentLevel = 1;
@@ -150,6 +176,13 @@ public class BST {
                 nodesInNextLevel = 0;
             }
         }
+    }
+
+    public boolean isEmpty() {
+        if (size == 0)
+            return true;
+        else
+            return false;
     }
 
     @Override

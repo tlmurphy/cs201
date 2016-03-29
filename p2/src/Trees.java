@@ -24,8 +24,10 @@ public class Trees {
             rbTree.insertRBT(rbTree.getRoot(), word);
         }
 
-        System.out.println(rbTree.getRoot().isBlack());
         rbTree.levelOrderTraversal(rbTree.getRoot());
+        tree.levelOrderTraversal(tree.getRoot());
+
+        tree.delete("fox");
         tree.levelOrderTraversal(tree.getRoot());
 //
 //        tree.delete("i");

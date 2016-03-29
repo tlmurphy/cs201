@@ -61,18 +61,26 @@ public class MyTreeNode {
     }
 
     public MyTreeNode getSibling() {
-        if (isRC())
-            return parent.LC;
-        else
+        if (isLC())
             return parent.RC;
+        else
+            return parent.LC;
     }
 
     public MyTreeNode getNephew() {
-        return getSibling().LC;
+        if (isLC()) {
+            return getSibling().RC;
+        } else {
+            return getSibling().LC;
+        }
     }
 
     public MyTreeNode getNiece() {
-        return getSibling().RC;
+        if (isLC()) {
+            return getSibling().LC;
+        } else {
+            return getSibling().RC;
+        }
     }
 
     public MyTreeNode getLC() {

@@ -15,7 +15,25 @@ public class RBTree extends BST {
     }
 
     public void deleteRBT(String text) {
-        super.delete(text);
+        if (isEmpty()) {
+            System.out.println("This tree is empty!");
+            return;
+        }
+        MyTreeNode temp = findNode(text);
+        if (temp == null) {
+            System.out.println("NODE NOT FOUND!");
+            return;
+        }
+        if (temp.getFrequency() > 1) {
+            temp.decrement();
+            return;
+        }
+        temp = swapToLeaf(temp);
+
+        deleteFixUp(temp);
+
+        //prune(temp);
+        setSize(getSize()-1);
     }
 
     private void insertFixUp(MyTreeNode n) {
@@ -61,7 +79,7 @@ public class RBTree extends BST {
                 rotate(n.getSibling());
                 // should have black sibling now
             }
-            else if (n.getNephew().isRed()) {
+            else if (n.getNephew()!=null && n.getNephew().isRed()) {
                 if (n.getParent().isRed()) n.getSibling().setRed();
                 else n.getSibling().setBlack();
                 n.getParent().setBlack();
@@ -70,7 +88,7 @@ public class RBTree extends BST {
                 n = getRoot();
                 // subtree and tree is BH balanced
             }
-            else if (n.getNiece().isRed()) {
+            else if (n.getNiece() != null && n.getNiece().isRed()) {
                 // nephew must be black
                 n.getNiece().setBlack();
                 n.getSibling().setRed();

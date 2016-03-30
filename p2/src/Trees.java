@@ -12,22 +12,20 @@ public class Trees {
         RBTree rbTree = new RBTree();
         Scanner sc = null;
         try {
-            sc = new Scanner(new File("corpus copy"));
+            sc = new Scanner(new File("myText"));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        while (sc.hasNext()) {
+        while (sc.hasNextInt()) {
             String word = sc.next();
             word = word.toLowerCase();
             word = word.replaceAll("[^a-zA-Z\\s]", "").replaceAll("\\s+", " ");
-            tree.insert(tree.getRoot(), word);
+            tree.insert(word);
             rbTree.insertRBT(rbTree.getRoot(), word);
         }
 
+        rbTree.deleteRBT(100);
         rbTree.levelOrderTraversal(rbTree.getRoot());
-        tree.levelOrderTraversal(tree.getRoot());
-
-        tree.delete("fox");
         tree.levelOrderTraversal(tree.getRoot());
 //
 //        tree.delete("i");

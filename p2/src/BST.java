@@ -11,7 +11,8 @@ public class BST {
     public BST() {
     }
 
-    public MyTreeNode insert(MyTreeNode node, String test) {
+    public MyTreeNode insert (String test) {
+        MyTreeNode node = root;
         MyTreeNode newNode;
         if (size == 0) {
             newNode = new MyTreeNode(test, null, 0);
@@ -20,6 +21,7 @@ public class BST {
             return newNode;
         }
 
+        size++;
         while (node != null) {
             if (test.compareTo(node.getValue()) == 0) {
                 node.increment();
@@ -42,7 +44,6 @@ public class BST {
                 }
             }
         }
-        size++;
         return null;
     }
 
@@ -146,10 +147,10 @@ public class BST {
     }
 
     public void levelOrderTraversal(MyTreeNode startNode) {
-        if (isEmpty()) {
-            System.out.println("THIS TREE IS EMPTY!");
-            return;
-        }
+//        if (isEmpty()) {
+//            System.out.println("THIS TREE IS EMPTY!");
+//            return;
+//        }
         Queue<MyTreeNode> queue=new LinkedList<MyTreeNode>();
         queue.add(startNode);
         int nodesInCurrentLevel = 1;

@@ -7,7 +7,7 @@ public class RBTree extends BST {
     }
 
     public void insertRBT(MyTreeNode node, String text) {
-        MyTreeNode n = super.insert(node, text);
+        MyTreeNode n = super.insert(text);
         if (n != null) {
             n.setRed();
             insertFixUp(n);

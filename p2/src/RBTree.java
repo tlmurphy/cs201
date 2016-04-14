@@ -1,41 +1,62 @@
 /**
- * Created by Trevor on 3/27/2016.
+ * Red-Black Tree Class.
+ * Inherits from the BST class. Delete and
+ * insert methods are overridden due to the needed
+ * addition of the helpher methods insertFixUp and
+ * deleteFixUp
  */
 public class RBTree extends BST {
 
-    public RBTree() {
-    }
+    public RBTree() { super(); }
 
-    public void insertRBT(MyTreeNode node, String text) {
+    /**
+     * Insert a word into the RBT tree.
+     * Set this new node to red and then preform
+     * insertFixUp to maintain RBT form and coloring.
+     * @param text Word to be inserted into tree.
+     * @return null.
+     */
+    public MyTreeNode insert(String text) {
         MyTreeNode n = super.insert(text);
         if (n != null) {
             n.setRed();
             insertFixUp(n);
         }
+        return null;
     }
 
-    public void deleteRBT(String text) {
+    /**
+     * The only difference between this RBT delete and a standard
+     * delete from BST is the addition of the deleteFixUp in order
+     * to maintain the RBT coloring and form.
+     * @param text The word to be deleted from the tree.
+     */
+    public void delete(String text) {
         if (isEmpty()) {
-            System.out.println("This tree is empty!");
+            System.err.println("THIS TREE IS EMPTY");
             return;
         }
         MyTreeNode temp = findNode(text);
+        MyTreeNode leaf;
         if (temp == null) {
-            System.out.println("NODE NOT FOUND!");
+            System.err.println("TRYING TO DELETE A NODE THAT DOES NOT EXIST");
             return;
         }
         if (temp.getFrequency() > 1) {
             temp.decrement();
             return;
         }
-        temp = swapToLeaf(temp);
-
-        deleteFixUp(temp);
-
-        //prune(temp);
-        setSize(getSize()-1);
+        leaf = swapToLeaf(temp);
+        deleteFixUp(leaf);
+        prune(leaf);
+        size--;
     }
 
+    /**
+     * Java implementation of Dr. Lusth's pseudocode
+     * for fixing coloring and shape of tree after insertion.
+     * @param n
+     */
     private void insertFixUp(MyTreeNode n) {
         while (true) {
             if (n.isRoot()) break;
@@ -62,11 +83,10 @@ public class RBTree extends BST {
                 }
 
                 rotate(n.getParent());
-//                  rotate parent to grandparent
                 break;
             }
         }
-        getRoot().setBlack();
+        root.setBlack();
     }
 
     private void deleteFixUp(MyTreeNode n) {
@@ -85,7 +105,7 @@ public class RBTree extends BST {
                 n.getParent().setBlack();
                 n.getNephew().setBlack();
                 rotate(n.getSibling());
-                n = getRoot();
+                n = root;
                 // subtree and tree is BH balanced
             }
             else if (n.getNiece() != null && n.getNiece().isRed()) {

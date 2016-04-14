@@ -1,43 +1,60 @@
-import java.util.LinkedList;
-import java.util.Queue;
-
 /**
- * Binary Search Tree Class
+ * Binary Search Tree Class.
+ * Contains standard methods for a BST:
+ * insert and delete. Also has many helper methods
+ * to help in insertions, deletions, and printing the level
+ * order.
  */
 public class BST {
-    private int size = 0;
-    private MyTreeNode root;
 
+    int size;
+    MyTreeNode root;
+
+    /**
+     * Default constructor for BST.
+     * Initialize variables.
+     */
     public BST() {
+        size = 0;
+        root = null;
     }
 
-    public MyTreeNode insert (String test) {
+    /**
+     * Insert a new node holding the value of the string
+     * that was just read. Sets this new node to root if
+     * the tree is empty. Else, find the appropriate place
+     * for the node and increment the size.
+     * @param text Word to be inserted into tree.
+     * @return The new node that was just inserted.
+     */
+    public MyTreeNode insert (String text) {
         MyTreeNode node = root;
         MyTreeNode newNode;
         if (size == 0) {
-            newNode = new MyTreeNode(test, null, 0);
+            newNode = new MyTreeNode(text, null, 0);
             this.root = newNode;
             size++;
             return newNode;
         }
 
-        size++;
         while (node != null) {
-            if (test.compareTo(node.getValue()) == 0) {
+            if (text.compareTo(node.getValue()) == 0) {
                 node.increment();
                 return null;
-            } else if (test.compareTo(node.getValue()) >= 1) {
+            } else if (text.compareTo(node.getValue()) >= 1) { // Search right subtree
                 if (node.getRC() == null) {
-                    newNode = new MyTreeNode(test, node, 2);
+                    newNode = new MyTreeNode(text, node, 2);
                     node.setRC(newNode);
+                    size++;
                     return newNode;
                 } else {
                     node = node.getRC();
                 }
             } else {
-                if (node.getLC() == null) {
-                    newNode = new MyTreeNode(test, node, 1);
+                if (node.getLC() == null) {                    // Search left subtree
+                    newNode = new MyTreeNode(text, node, 1);
                     node.setLC(newNode);
+                    size++;
                     return newNode;
                 } else {
                     node = node.getLC();
@@ -47,47 +64,76 @@ public class BST {
         return null;
     }
 
+    /**
+     * Find a value in the tree and delete it.
+     * First search for the node to be deleted, once
+     * found, swap it with children until it is a leaf.
+     * Once the node to be deleted is a leaf, it can now be pruned
+     * from the tree.
+     * If the tree is empty, or the word cannot be found in the tree,
+     * an error message is printed.
+     * @param text The word to be deleted from the tree.
+     */
     public void delete(String text) {
+        if (isEmpty()) {
+            System.err.println("THIS TREE IS EMPTY");
+            return;
+        }
         MyTreeNode temp = findNode(text);
+        MyTreeNode leaf;
         if (temp == null) {
-            System.out.println("NODE NOT FOUND!");
+            System.err.println("TRYING TO DELETE A NODE THAT DOES NOT EXIST");
             return;
         }
         if (temp.getFrequency() > 1) {
             temp.decrement();
             return;
         }
-        temp = swapToLeaf(temp);
-        prune(temp);
+        leaf = swapToLeaf(temp);
+        prune(leaf);
         size--;
     }
 
+    /**
+     * Swap a node with its children until it becomes
+     * a leaf node. Uses find predecessor until a left child
+     * does not exist, then uses find successor to find the swap
+     * node.
+     * @param n The node to be swapped until it is a leaf.
+     * @return The final leaf node.
+     */
     public MyTreeNode swapToLeaf(MyTreeNode n) {
-        MyTreeNode p = n.getParent();
-        if (n.getLC() == null && n.getRC() == null) {
-            // Leaf node
-            return n;
-        }
+        MyTreeNode swp;
+        if (n.isLeaf()) return n;
 
-        if (n.getLC() != null) {
-            MyTreeNode predecessor = null;
-            // Left subtree is available
-            predecessor = findPredecessor(n);
-            n.setValue(predecessor.getValue());
-            n.setFrequency(predecessor.getFrequency());
-            return predecessor;
-        } else {
-            // No left subtree, use right child
-            if (n.isRoot())
-                this.root = n.getRC();
-            else if (n.isLC())
-                p.setLC(n.getRC());
-            else
-                p.setRC(n.getLC());
-            return n.getRC();
-        }
+        // Find a node to swap with
+        if (n.getLC() != null)
+            swp = findPredecessor(n);
+        else
+            swp = findSuccessor(n);
+
+        swap(n, swp);
+        return swapToLeaf(swp);
     }
 
+    /**
+     * Swap two nodes (only their values and frequencies).
+     * @param n First node to swap.
+     * @param swp Second node to swap.
+     */
+    private void swap(MyTreeNode n, MyTreeNode swp) {
+        int tempF = n.getFrequency();
+        String tempS = n.getValue();
+        n.setFrequency(swp.getFrequency());
+        n.setValue(swp.getValue());
+        swp.setFrequency(tempF);
+        swp.setValue(tempS);
+    }
+
+    /**
+     * Remove a leaf node from the tree.
+     * @param node Leaf node to be removed.
+     */
     public void prune(MyTreeNode node) {
         if (node.isLC()) {
             node.getParent().setLC(null);
@@ -96,30 +142,20 @@ public class BST {
         }
     }
 
+    private MyTreeNode findSuccessor(MyTreeNode node) {
+        MyTreeNode temp = node;
+        temp = temp.getRC();
+        while (temp.getLC() != null)
+            temp = temp.getLC();
+        return temp;
+    }
+
     private MyTreeNode findPredecessor(MyTreeNode node) {
         MyTreeNode temp = node;
         temp = temp.getLC();
         while (temp.getRC() != null)
             temp = temp.getRC();
-        MyTreeNode p = temp.getParent();
-        if (temp.isLC()) {
-            p.setLC(temp.getLC());
-        }
-        else
-            p.setRC(null);
         return temp;
-    }
-
-    public int getSize() {
-        return size;
-    }
-
-    public void setSize(int size) {
-        this.size = size;
-    }
-
-    public MyTreeNode getRoot() {
-        return root;
     }
 
     public void setRoot(MyTreeNode root) {
@@ -132,64 +168,110 @@ public class BST {
         while (temp != null) {
             if (text.compareTo(temp.getValue()) == 0)
                 break;
-            else if (text.compareTo(temp.getValue()) >= 1) {
+            else if (text.compareTo(temp.getValue()) >= 1)
                 temp = temp.getRC();
-            }
-            else {
+            else
                 temp = temp.getLC();
-            }
         }
         return temp;
     }
 
     public void reportFrequency(String text) {
-        System.out.println(findNode(text).getFrequency());
-    }
-
-    public void levelOrderTraversal(MyTreeNode startNode) {
-//        if (isEmpty()) {
-//            System.out.println("THIS TREE IS EMPTY!");
-//            return;
-//        }
-        Queue<MyTreeNode> queue=new LinkedList<MyTreeNode>();
-        queue.add(startNode);
-        int nodesInCurrentLevel = 1;
-        int nodesInNextLevel = 0;
-        int level = 1;
-        String levelBuilder = "";
-        while (!queue.isEmpty()) {
-            MyTreeNode tempNode=queue.peek();
-            queue.remove();
-            nodesInCurrentLevel--;
-            if (tempNode != null) {
-                levelBuilder = levelBuilder + tempNode + " ";
-                queue.add(tempNode.getLC());
-                queue.add(tempNode.getRC());
-                nodesInNextLevel += 2;
-            }
-            if (nodesInCurrentLevel == 0) {
-                String print = level + ": " + levelBuilder;
-                levelBuilder = "";
-                System.out.print(print);
-                System.out.println();
-                level++;
-                nodesInCurrentLevel = nodesInNextLevel;
-                nodesInNextLevel = 0;
-            }
+        MyTreeNode node = findNode(text);
+        if (node != null) {
+            System.out.println(node.getFrequency());
+        } else {
+            System.out.println(0);
         }
     }
 
-    public boolean isEmpty() {
-        if (size == 0)
-            return true;
-        else
-            return false;
+    /**
+     * Used in printing the level order representation
+     * of the tree. Uses two queues in order to keep track
+     * of the current and next level.
+     * @return Final level order representation of tree.
+     */
+    public String levelOrderTraversal() {
+        if (isEmpty()) {
+            return "THIS TREE IS EMPTY";
+        }
+        MyQueue currentLevel = new MyQueue();
+        MyQueue nextLevel = new MyQueue();
+        String builder = "";
+        String builderHelper = "";
+        currentLevel.add(root);
+        int level = 1;
+        while (!currentLevel.isEmpty()) {
+            MyTreeNode temp = currentLevel.remove();
+            builderHelper = builderHelper + temp + " ";
+            if (temp.getLC() != null)
+                nextLevel.add(temp.getLC());
+            if (temp.getRC() != null)
+                nextLevel.add(temp.getRC());
+            if (currentLevel.isEmpty()) {
+                builder = builder + level + ": " + builderHelper + "\n";
+                builderHelper = "";
+                level++;
+                currentLevel = nextLevel;
+                nextLevel = new MyQueue();
+            }
+        }
+        return builder;
     }
+
+    public int minDepth() {
+        if (isEmpty()) {
+            return 0;
+        }
+        MyQueue currentLevel = new MyQueue();
+        MyQueue nextLevel = new MyQueue();
+        currentLevel.add(root);
+        int level = 1;
+        while (!currentLevel.isEmpty()) {
+            MyTreeNode temp = currentLevel.remove();
+            if (temp.isLeaf()) {
+                return level;
+            }
+            if (temp.getLC() != null)
+                nextLevel.add(temp.getLC());
+            if (temp.getRC() != null)
+                nextLevel.add(temp.getRC());
+            if (currentLevel.isEmpty()) {
+                level++;
+                currentLevel = nextLevel;
+                nextLevel = new MyQueue();
+            }
+        }
+        return level - 1;
+    }
+
+    public int maxDepth() {
+        if (isEmpty()) {
+            return 0;
+        }
+        MyQueue currentLevel = new MyQueue();
+        MyQueue nextLevel = new MyQueue();
+        currentLevel.add(root);
+        int level = 1;
+        while (!currentLevel.isEmpty()) {
+            MyTreeNode temp = currentLevel.remove();
+            if (temp.getLC() != null)
+                nextLevel.add(temp.getLC());
+            if (temp.getRC() != null)
+                nextLevel.add(temp.getRC());
+            if (currentLevel.isEmpty()) {
+                level++;
+                currentLevel = nextLevel;
+                nextLevel = new MyQueue();
+            }
+        }
+        return level - 1;
+    }
+
+
+    public boolean isEmpty() { return size == 0; }
 
     @Override
-    public String toString() {
-
-        return "BST{}";
-    }
+    public String toString() { return levelOrderTraversal(); }
 }
 

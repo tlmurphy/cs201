@@ -1,22 +1,30 @@
 """Disjoint Set Class"""
 
+class Vertex:
 
-class SetNode:
-
-    def __init__(self, val, parent=None):
-        self.val = val
+    def __init__(self, data, parent=None, rank=0):
+        self.data = data
         self.parent = parent
-        self.rank = 0
+        self.rank = rank
 
+    def __str__(self):
+        return str(self.data)
 
 class DisjointSet:
 
     def __init__(self):
-        self.head = None
+        self.sets_list = {}
 
-    def makeSet(self, x):
+    def get_vertex(self, data):
+        return self.sets_list[data]
+
+    def makeSet(self, data):
+        x = Vertex(data)
         x.parent = x
-        x.rank = 0
+        self.sets_list[x.data] = x
+
+    def find_repr(self, data):
+        return self.findSet(self.sets_list[data]).data
 
     def findSet(self, n):
         if n.parent != n:
@@ -34,8 +42,17 @@ class DisjointSet:
             if x.rank == y.rank:
                 y.rank += 1
 
-    def union(self, x, y):
+    def union(self, data1, data2):
+        x = self.sets_list[data1]
+        y = self.sets_list[data2]
         self.link(self.findSet(x), self.findSet(y))
 
-    def __str__(self):
-        return "{" + ", ".join(map(str, self)) + "}"
+    def root_union(self, root, data):
+        rootx = self.sets_list[root]
+        y = self.sets_list[data]
+        y.parent = rootx
+
+    def bfs(self, root_data):
+        root = self.sets_list[root_data]
+        print(root)
+

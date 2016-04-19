@@ -1,5 +1,6 @@
 """Disjoint Set Class"""
 
+
 class Vertex:
 
     def __init__(self, data, parent=None, rank=0):
@@ -9,6 +10,7 @@ class Vertex:
 
     def __str__(self):
         return str(self.data)
+
 
 class DisjointSet:
 
@@ -31,9 +33,6 @@ class DisjointSet:
             n.parent = self.findSet(n.parent)
         return n.parent
 
-    def same_set(self, s1, s2):
-        return self.findSet(s1) == self.findSet(s2)
-
     def link(self, x, y):
         if x.rank > y.rank:
             y.parent = x
@@ -46,13 +45,4 @@ class DisjointSet:
         x = self.sets_list[data1]
         y = self.sets_list[data2]
         self.link(self.findSet(x), self.findSet(y))
-
-    def root_union(self, root, data):
-        rootx = self.sets_list[root]
-        y = self.sets_list[data]
-        y.parent = rootx
-
-    def bfs(self, root_data):
-        root = self.sets_list[root_data]
-        print(root)
 

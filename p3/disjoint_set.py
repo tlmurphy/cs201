@@ -1,4 +1,5 @@
-"""Disjoint Set Class"""
+""" Disjoint Set Class utilizing path compression
+    and union by rank. """
 
 
 class Vertex:

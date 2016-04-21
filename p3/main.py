@@ -1,3 +1,10 @@
+""" Main file for Kruskal Project.
+    Read in a file containg edges and weights.
+    Build disjoint set, sort edges, then union sets
+    if they are separate. Once minimum spanning tree is
+    found, print a MST based upon a given root, with the tree's total
+    weight and number of unreachable vertices. """
+
 import disjoint_set
 import edge
 import sys
@@ -16,14 +23,14 @@ def make_edges(tokens, edges, edge_dict, dis_set):
         if token == ";":
             v1 = int(temp_list[0])
             v2 = int(temp_list[1])
-            if len(temp_list) == 2:  # No weight
+            if len(temp_list) == 2:  # No weight, use default of 1
                 new_edge = edge.Edge(v1, v2)
             else:
-                new_edge = edge.Edge(v1, v2, int(temp_list[2]))
+                new_edge = edge.Edge(v1, v2, int(temp_list[2]))  # Weight is given
 
-            if (v1, v2) not in edge_dict and (v2, v1) not in edge_dict:
+            if (v1, v2) not in edge_dict and (v2, v1) not in edge_dict:  # No duplicate edges
                 edges.append(new_edge)
-                edge_dict[v1, v2] = new_edge.weight
+                edge_dict[v1, v2] = None
 
             if v1 not in dis_set.sets_list:
                 dis_set.makeSet(v1)
@@ -34,7 +41,7 @@ def make_edges(tokens, edges, edge_dict, dis_set):
             temp_list.append(token)
 
 
-def minimum_spanning_tree(dis_set):
+def minimum_spanning_tree(dis_set):  # Kruskal's Algorithm
     edge_list = []
     final_edge_list = []
     edge_dict = {}
@@ -51,36 +58,19 @@ def minimum_spanning_tree(dis_set):
     return final_edge_list
 
 
-def print_tree(dis_set, final_edge_list):
-    print("0: " + str(root) + ";")
-    level = 1
-    level_str = str(level) + ": "
-    level_list = []
-    next_level = {}
+def print_tree(dis_set, edges):
+    print("0: " + str(root) + "; ")
 
+    level = 1
+    next_level = {root: None}
     weight = 0
     unreachable = 0
-    for e in final_edge_list:
-        level_list.append(e)
-        if e.v1 == root:
-            level_str = level_str + str(dis_set.sets_list[e.v2]) + "(" + str(root) + ")" + str(e.weight) + "; "
-            next_level[e.v2] = None
-            level_list.pop()
-            weight += e.weight
-        elif e.v2 == root:
-            level_str = level_str + str(dis_set.sets_list[e.v1]) + "(" + str(root) + ")" + str(e.weight) + "; "
-            next_level[e.v1] = None
-            level_list.pop()
-            weight += e.weight
-
-    level += 1
-    print(level_str)
-
+    unreachable_vertices = {}
     while True:
         level_str = str(level) + ": "
-        another_list = []
+        temp_list = []
         next_next_level = {}
-        for e in level_list:
+        for e in edges:
             if e.v1 in next_level:
                 level_str = level_str + str(dis_set.sets_list[e.v2]) + "(" + str(e.v1) + ")" + str(e.weight) + "; "
                 next_next_level[e.v2] = None
@@ -90,12 +80,15 @@ def print_tree(dis_set, final_edge_list):
                 next_next_level[e.v1] = None
                 weight += e.weight
             else:
-                another_list.append(e)
-        if level_list == another_list:
-            unreachable = len(level_list) * 2
+                temp_list.append(e)
+        if len(edges) == len(temp_list):  # the edges list keeps shrinking, so stop when temp and edges are equal
+            for e in edges:
+                unreachable_vertices[e.v1] = None
+                unreachable_vertices[e.v2] = None
+            unreachable = len(unreachable_vertices)
             break
         level += 1
-        level_list = another_list
+        edges = temp_list
         next_level = next_next_level
         print(level_str)
     print("weight: " + str(weight))
@@ -119,6 +112,10 @@ if __name__ == '__main__':
         path = sys.argv[1]
 
     token_list = read_tokens(path)
+    if not token_list:
+        print("weight: 0")
+        print("unreachable: 0")
+        sys.exit()
 
     if given_root is False:
         root = int(token_list[0])

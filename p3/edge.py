@@ -1,4 +1,5 @@
-"""Edge class"""
+""" Edge class used to keep track of vertiex connections
+    and edge weight. """
 
 
 class Edge:

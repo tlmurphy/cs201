@@ -10,7 +10,38 @@ import edge
 import sys
 
 
+def main():
+    """Main function."""
+    given_root = False
+    root = 0
+
+    if len(sys.argv) > 2:
+        given_root = True
+        if sys.argv[1] == '-r':
+            path = sys.argv[3]
+            root = int(sys.argv[2])
+        else:
+            path = sys.argv[1]
+            root = int(sys.argv[3])
+    else:
+        path = sys.argv[1]
+
+    token_list = read_tokens(path)
+    if not token_list:
+        print("weight: 0")
+        print("unreachable: 0")
+        sys.exit()
+
+    if given_root is False:
+        root = int(token_list[0])
+
+    dis_set = disjoint_set.DisjointSet()
+    final_edge_list = minimum_spanning_tree(dis_set, token_list)
+    print_tree(dis_set, final_edge_list, root)
+
+
 def read_tokens(path):
+    """Read file and store each token into a token list."""
     with open(path, 'r') as f:
         file_str = f.read()
         token_list = ' '.join(file_str.split()).split()
@@ -18,6 +49,7 @@ def read_tokens(path):
 
 
 def make_edges(tokens, edges, edge_dict, dis_set):
+    """Iterate though the tokens list and create edge objects."""
     temp_list = []
     for token in tokens:
         if token == ";":
@@ -41,11 +73,13 @@ def make_edges(tokens, edges, edge_dict, dis_set):
             temp_list.append(token)
 
 
-def minimum_spanning_tree(dis_set):  # Kruskal's Algorithm
+def minimum_spanning_tree(dis_set, tokens):
+    """Kruskal's Algorithm. Sort the edge list based upon weight
+    then union sets."""
     edge_list = []
     final_edge_list = []
     edge_dict = {}
-    make_edges(token_list, edge_list, edge_dict, dis_set)
+    make_edges(tokens, edge_list, edge_dict, dis_set)
     edge_list = sorted(edge_list, key=lambda edge: edge.weight)
 
     for e in edge_list:
@@ -58,7 +92,8 @@ def minimum_spanning_tree(dis_set):  # Kruskal's Algorithm
     return final_edge_list
 
 
-def print_tree(dis_set, edges):
+def print_tree(dis_set, edges, root):
+    """Print MST based on given root."""
     print("0: " + str(root) + "; ")
 
     level = 1
@@ -96,30 +131,4 @@ def print_tree(dis_set, edges):
 
 
 if __name__ == '__main__':
-
-    given_root = False
-    root = 0
-
-    if len(sys.argv) > 2:
-        given_root = True
-        if sys.argv[1] == '-r':
-            path = sys.argv[3]
-            root = int(sys.argv[2])
-        else:
-            path = sys.argv[1]
-            root = int(sys.argv[3])
-    else:
-        path = sys.argv[1]
-
-    token_list = read_tokens(path)
-    if not token_list:
-        print("weight: 0")
-        print("unreachable: 0")
-        sys.exit()
-
-    if given_root is False:
-        root = int(token_list[0])
-
-    dis_set = disjoint_set.DisjointSet()
-    final_edge_list = minimum_spanning_tree(dis_set)
-    print_tree(dis_set, final_edge_list)
+    main()
